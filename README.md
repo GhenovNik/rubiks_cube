@@ -18,27 +18,6 @@ This is a simple web application that visually represents a Rubik's Cube and all
 - **Vite**: for the build tool and development server.
 - **ESLint**: for identifying and fixing linting problems in JavaScript code.
 
-## Project Structure
-
-rubiks_cube/
-│
-├── src/ # Source code
-│ ├── App.js # Main React component
-│ ├── Cube.js # Logic for rotating the cube
-│ ├── index.css # Styles
-│ └── index.js # Entry point for React
-│
-├── index.html # Main HTML file
-├── vite.config.js # Vite configuration
-├── tailwind.config.js # Tailwind CSS configuration
-├── postcss.config.js # PostCSS configuration
-├── .eslintrc.cjs # ESLint configuration
-├── .gitignore # Files and directories to ignore in Git
-├── package.json # Project dependencies and scripts
-├── package-lock.json # Exact versions of project dependencies
-└── README.md # Project documentation
-
-
 ## Getting Started
 
 ### Prerequisites
