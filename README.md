@@ -28,7 +28,7 @@ This is a simple web application that visually represents a Rubik's Cube and all
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/rubiks_cube.git
+   git clone https://github.com/GhenovNik/rubiks_cube.git
    cd rubiks_cube
    
 2. Install the dependencies:
