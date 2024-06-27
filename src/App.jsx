@@ -1,4 +1,5 @@
-import { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
+import React,{ useState } from 'react';
 import { initialCubeState, rotateCube } from './Cube';
 import './index.css';
 

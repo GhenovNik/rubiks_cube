@@ -47,6 +47,11 @@ This is a simple web application that visually represents a Rubik's Cube and all
 * Select the rotation direction (Clockwise or Counterclockwise) using the radio buttons.
 * Click the `Reset` button to reset the cube to its initial state.
 
+## Running Tests
+   To run the tests, use the following command:
+   ```bash
+   npm run test
+   ```
 ## Contact
 * Author: Nicolai Ghenov
 * Email: nick.rundev@gmail.com
