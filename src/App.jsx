@@ -1,146 +1,138 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { initialCubeState, rotateCube } from './Cube';
 import './index.css';
 
-/**
- * Renders the main application component.
- *
- * @return {JSX.Element} The rendered application component.
- */
+const COLORS = {
+    U: '#FFD500',
+    F: '#009B48',
+    R: '#B71234',
+    B: '#0046AD',
+    L: '#FF5800',
+    D: '#FFFFFF',
+};
+
+const FACE_NAMES = { U: 'Up', D: 'Down', F: 'Front', B: 'Back', L: 'Left', R: 'Right' };
+
+const getColor = (sticker) => COLORS[sticker[0]] ?? '#555';
+
+const StickerGrid = ({ stickers }) => (
+    <div className="sticker-grid">
+        {stickers.map((s, i) => (
+            <div key={i} className="sticker" style={{ backgroundColor: getColor(s) }} data-sticker={s} />
+        ))}
+    </div>
+);
+
 const App = () => {
-    const [cube, setCube] = useState(structuredClone(initialCubeState));
-    const [rotationDirection, setRotationDirection] = useState('clockwise');
+    const [cube, setCube] = useState(() => structuredClone(initialCubeState));
+    const [rotX, setRotX] = useState(-25);
+    const [rotY, setRotY] = useState(35);
+    const drag = useRef(null);
 
-    /**
-     * Rotates the cube based on the specified face.
-     *
-     * @param {string} face - The face to rotate the cube.
-     */
-    const handleRotate = (face) => {
-        setCube((prevCube) => rotateCube(prevCube, face, rotationDirection));
+    const handleRotate = useCallback((face, direction) => {
+        setCube((prev) => rotateCube(prev, face, direction));
+    }, []);
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        drag.current = { x: e.clientX, y: e.clientY, rotX, rotY };
     };
 
-    /**
-     * Resets the cube to its initial state by creating a deep copy of the initialCubeState object.
-     */
-    const resetCube = () => {
-        setCube(structuredClone(initialCubeState));
+    const onMouseMove = (e) => {
+        if (!drag.current) return;
+        const dx = e.clientX - drag.current.x;
+        const dy = e.clientY - drag.current.y;
+        setRotY(drag.current.rotY + dx * 0.4);
+        setRotX(drag.current.rotX - dy * 0.4);
     };
 
-    /**
-     * Returns the corresponding background color class based on the provided color.
-     *
-     * @param {string} color - The color to determine the background class for.
-     * @return {string} The background color class corresponding to the input color.
-     */
-    const getColorClass = (color) => {
-        switch (color[0]) {
-            case 'U':
-                return 'bg-yellow-500';
-            case 'F':
-                return 'bg-green-500';
-            case 'R':
-                return 'bg-red-500';
-            case 'B':
-                return 'bg-blue-500';
-            case 'L':
-                return 'bg-orange-500';
-            case 'D':
-                return 'bg-white';
-            default:
-                return '';
-        }
+    const onMouseUp = () => { drag.current = null; };
+
+    const SIZE = 180;
+    const HALF = SIZE / 2;
+
+    const faceTransforms = {
+        F: `translateZ(${HALF}px)`,
+        B: `rotateY(180deg) translateZ(${HALF}px)`,
+        R: `rotateY(90deg) translateZ(${HALF}px)`,
+        L: `rotateY(-90deg) translateZ(${HALF}px)`,
+        U: `rotateX(90deg) translateZ(${HALF}px)`,
+        D: `rotateX(-90deg) translateZ(${HALF}px)`,
     };
 
     return (
-        <div className="app-container p-6 flex">
-            <div className="controls flex flex-col space-y-2 mb-4 mr-4">
-                <h1 className="text-2xl mb-4">Rubik&apos;s Cube by NickG</h1>
-                {['U', 'F', 'R', 'B', 'L', 'D'].map((face) => (
-                    <button
-                        key={face}
-                        className="bg-primary text-white py-2 px-4 rounded"
-                        onClick={() => handleRotate(face)}
-                    >
-                        Rotate {face} {rotationDirection}
-                    </button>
-                ))}
-                <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={resetCube}>
-                    Reset
-                </button>
-                <div className="flex space-x-4 mt-4">
-                    <label htmlFor="clockwise">
-                        <input
-                            id="clockwise"
-                            type="radio"
-                            name="direction"
-                            value="clockwise"
-                            checked={rotationDirection === 'clockwise'}
-                            onChange={() => setRotationDirection('clockwise')}
-                        />
-                        Clockwise
-                    </label>
-                    <label htmlFor="counterclockwise">
-                        <input
-                            id="counterclockwise"
-                            type="radio"
-                            name="direction"
-                            value="counterclockwise"
-                            checked={rotationDirection === 'counterclockwise'}
-                            onChange={() => setRotationDirection('counterclockwise')}
-                        />
-                        Counterclockwise
-                    </label>
-                </div>
-            </div>
-            <div className="flex flex-col items-center">
-                <div className="grid grid-cols-3 gap-1 mb-2 -ml-28">
-                    {cube.U.map((color, idx) => (
-                        <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                            <span className="text-black">{color}</span>
-                        </div>
-                    ))}
-                </div>
-                <div className="flex">
-                    <div className="grid grid-cols-3 gap-1 mr-2">
-                        {cube.L.map((color, idx) => (
-                            <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                                <span className="text-black">{color}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-3 gap-1 mr-2">
-                        {cube.F.map((color, idx) => (
-                            <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                                <span className="text-black">{color}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-3 gap-1 mr-2">
-                        {cube.R.map((color, idx) => (
-                            <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                                <span className="text-black">{color}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-3 gap-1">
-                        {cube.B.map((color, idx) => (
-                            <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                                <span className="text-black">{color}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-1 mt-2 -ml-28">
-                    {cube.D.map((color, idx) => (
-                        <div key={idx} className={`h-8 w-8 flex items-center justify-center border ${getColorClass(color)}`}>
-                            <span className="text-black">{color}</span>
+        <div
+            className="app-bg"
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+        >
+            <h1 className="app-title">Rubik&apos;s Cube</h1>
+            <p className="app-hint">Drag to rotate view</p>
+
+            <div
+                className="scene"
+                onMouseDown={onMouseDown}
+                style={{ cursor: drag.current ? 'grabbing' : 'grab' }}
+            >
+                <div
+                    className="cube-3d"
+                    style={{ transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)` }}
+                >
+                    {Object.entries(faceTransforms).map(([face, transform]) => (
+                        <div key={face} className="cube-face" style={{ transform }}>
+                            <StickerGrid stickers={cube[face]} />
                         </div>
                     ))}
                 </div>
             </div>
+
+            <div className="controls-grid">
+                <div />
+                <FaceControl face="U" onRotate={handleRotate} />
+                <div />
+
+                <FaceControl face="L" onRotate={handleRotate} />
+                <FaceControl face="F" onRotate={handleRotate} />
+                <FaceControl face="R" onRotate={handleRotate} />
+
+                <div />
+                <FaceControl face="D" onRotate={handleRotate} />
+                <FaceControl face="B" onRotate={handleRotate} />
+            </div>
+
+            <button
+                className="reset-btn"
+                onClick={() => setCube(structuredClone(initialCubeState))}
+            >
+                Reset
+            </button>
         </div>
     );
 };
+
+const FaceControl = ({ face, onRotate }) => (
+    <div className="face-control">
+        <span className="face-control-label" style={{ color: COLORS[face] }}>
+            {FACE_NAMES[face]}
+        </span>
+        <div className="face-control-btns">
+            <button
+                className="rotate-btn"
+                title={`Rotate ${face} clockwise`}
+                onClick={() => onRotate(face, 'clockwise')}
+            >
+                ↻
+            </button>
+            <button
+                className="rotate-btn"
+                title={`Rotate ${face} counterclockwise`}
+                onClick={() => onRotate(face, 'counterclockwise')}
+            >
+                ↺
+            </button>
+        </div>
+    </div>
+);
 
 export default App;
