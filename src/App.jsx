@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React,{ useState } from 'react';
+import { useState } from 'react';
 import { initialCubeState, rotateCube } from './Cube';
 import './index.css';
 
@@ -9,7 +8,7 @@ import './index.css';
  * @return {JSX.Element} The rendered application component.
  */
 const App = () => {
-    const [cube, setCube] = useState(JSON.parse(JSON.stringify(initialCubeState)));
+    const [cube, setCube] = useState(structuredClone(initialCubeState));
     const [rotationDirection, setRotationDirection] = useState('clockwise');
 
     /**
@@ -18,14 +17,14 @@ const App = () => {
      * @param {string} face - The face to rotate the cube.
      */
     const handleRotate = (face) => {
-        setCube((prevCube) => rotateCube(JSON.parse(JSON.stringify(prevCube)), face, rotationDirection));
+        setCube((prevCube) => rotateCube(prevCube, face, rotationDirection));
     };
 
     /**
      * Resets the cube to its initial state by creating a deep copy of the initialCubeState object.
      */
     const resetCube = () => {
-        setCube(JSON.parse(JSON.stringify(initialCubeState)));
+        setCube(structuredClone(initialCubeState));
     };
 
     /**
@@ -56,8 +55,7 @@ const App = () => {
     return (
         <div className="app-container p-6 flex">
             <div className="controls flex flex-col space-y-2 mb-4 mr-4">
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                <h1 className="text-2xl mb-4">Rubik's Cube by NickG</h1>
+                <h1 className="text-2xl mb-4">Rubik&apos;s Cube by NickG</h1>
                 {['U', 'F', 'R', 'B', 'L', 'D'].map((face) => (
                     <button
                         key={face}
@@ -71,8 +69,9 @@ const App = () => {
                     Reset
                 </button>
                 <div className="flex space-x-4 mt-4">
-                    <label>
+                    <label htmlFor="clockwise">
                         <input
+                            id="clockwise"
                             type="radio"
                             name="direction"
                             value="clockwise"
@@ -81,8 +80,9 @@ const App = () => {
                         />
                         Clockwise
                     </label>
-                    <label>
+                    <label htmlFor="counterclockwise">
                         <input
+                            id="counterclockwise"
                             type="radio"
                             name="direction"
                             value="counterclockwise"

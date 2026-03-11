@@ -1,8 +1,7 @@
 import { render, fireEvent, screen } from '@testing-library/react';
 import App from './App';
 import '@testing-library/jest-dom';
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
+import { rotateCube, initialCubeState } from './Cube';
 
 // Test to check if the Rubik's Cube title is rendered correctly
 test('renders Rubik\'s Cube title', () => {
@@ -44,7 +43,14 @@ test('initializes each face to the correct state', () => {
     expect(upperFace).toEqual(['U1', 'U2', 'U3', 'U4', 'U5', 'U6', 'U7', 'U8', 'U9']);
     const frontFace = screen.getAllByText(/F\d/).map(el => el.textContent);
     expect(frontFace).toEqual(['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9']);
-    // Add similar checks for other faces R, B, L, D
+    const rightFace = screen.getAllByText(/R\d/).map(el => el.textContent);
+    expect(rightFace).toEqual(['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9']);
+    const backFace = screen.getAllByText(/B\d/).map(el => el.textContent);
+    expect(backFace).toEqual(['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9']);
+    const leftFace = screen.getAllByText(/L\d/).map(el => el.textContent);
+    expect(leftFace).toEqual(['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7', 'L8', 'L9']);
+    const downFace = screen.getAllByText(/D\d/).map(el => el.textContent);
+    expect(downFace).toEqual(['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9']);
 });
 
 // Test to check if each face rotates correctly
@@ -87,11 +93,8 @@ test('resets the cube correctly after multiple rotations', () => {
 });
 
 // Test for invalid operations
-test('does not crash on invalid operations', () => {
-    render(<App />);
-
-    // Try rotating a non-existent face
-    expect(() => fireEvent.click(screen.getByText(/Rotate X clockwise/i))).toThrow();
+test('throws error for invalid face in cube logic', () => {
+    expect(() => rotateCube(initialCubeState, 'X', 'clockwise')).toThrow('Invalid face: X');
 });
 
 // Test for correct number of buttons
