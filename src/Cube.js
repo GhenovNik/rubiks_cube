@@ -70,7 +70,7 @@ const getEdges = (cube, face) => {
  */
 const applyReverse = (arr, reverseClockwise, reverseCounterClockwise) => {
     if (reverseClockwise || reverseCounterClockwise) {
-        return arr.reverse();
+        return [...arr].reverse();
     }
     return arr;
 };
@@ -155,7 +155,12 @@ const rotateEdgesCounterClockwise = (edges) => {
  * @return {Object} The rotated cube object.
  */
 export const rotateCube = (cube, face, direction) => {
-    const newCube = JSON.parse(JSON.stringify(cube)); // Deep copy of cube
+    const validFaces = ['U', 'F', 'R', 'B', 'L', 'D'];
+    if (!validFaces.includes(face)) {
+        throw new Error(`Invalid face: ${face}`);
+    }
+
+    const newCube = structuredClone(cube);
 
     const clockwise = direction === 'clockwise';
     const faceRotation = clockwise ? rotateFaceClockwise : rotateFaceCounterClockwise;

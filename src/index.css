@@ -2,119 +2,165 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* === Base === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
+    background: #0f0f13;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* === Layout === */
+.app-bg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+    gap: 24px;
+    user-select: none;
 }
 
-.border {
-  border: 1px solid #ccc;
+.app-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #f0f0f0;
 }
 
-.bg-yellow-500 { background-color: #ffcc00; } /* Yellow */
-.bg-green-500 { background-color: #00cc00; } /* Green */
-.bg-red-500 { background-color: #ff0000; } /* Red */
-.bg-blue-500 { background-color: #207FF6; } /* Blue */
-.bg-orange-500 { background-color: #FF8800FF; } /* Orange */
-.bg-white { background-color: #ffffff; } /* White */
-
-.text-black {
-  color: black;
+.app-hint {
+    font-size: 0.78rem;
+    color: #555;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: -16px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* === 3D Scene === */
+.scene {
+    width: 180px;
+    height: 180px;
+    perspective: 520px;
+    perspective-origin: 50% 50%;
+    margin: 32px auto;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+.cube-3d {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.08s linear;
 }
 
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.cube-face {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background: #1a1a22;
+    border: 2px solid #2a2a35;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    padding: 5px;
 }
 
-.cube-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+.sticker-grid {
+    display: contents;
 }
 
-.face-button {
-  background-color: #1a1a1a;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.sticker {
+    border-radius: 5px;
+    transition: background-color 0.25s ease;
+    box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.4);
 }
 
-.face-button:hover {
-  background-color: #333;
+/* === Controls === */
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 88px);
+    grid-template-rows: repeat(3, auto);
+    gap: 6px;
+}
+
+.face-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: #16161f;
+    border: 1px solid #2a2a38;
+    border-radius: 10px;
+    padding: 8px 6px;
+}
+
+.face-control-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.face-control-btns {
+    display: flex;
+    gap: 4px;
+}
+
+.rotate-btn {
+    background: #22222e;
+    border: 1px solid #33334a;
+    color: #ccc;
+    font-size: 1.1rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rotate-btn:hover {
+    background: #2e2e42;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.rotate-btn:active {
+    transform: scale(0.95);
+}
+
+/* === Reset Button === */
+.reset-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    padding: 8px 28px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.reset-btn:hover {
+    border-color: #888;
+    color: #ddd;
 }
